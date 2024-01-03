@@ -58,6 +58,15 @@ export function Facilities(){
     });
 }
 
+export function TotalPatients(){
+    return request({
+        url: API_BASE_URL + "/fac/patN",
+        method: 'GET'
+    });
+}
+
+
+
 // export function getAllusers(){
 //     return request({
 //         url:API_BASE_URL +"/users",

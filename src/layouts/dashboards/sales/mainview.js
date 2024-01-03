@@ -33,7 +33,7 @@ import horizontalBarChartData from "layouts/dashboards/sales/data/horizontalBarC
 import salesTableData from "layouts/dashboards/sales/data/salesTableData";
 import dataTableData from "layouts/dashboards/sales/data/dataTableData";
 
-import {Facilities} from "utils/APIUtils"
+import {Facilities,TotalPatients} from "utils/APIUtils"
 
 function Sales() {
   const [nf,setNf] = useState();
@@ -67,10 +67,11 @@ function Sales() {
     setRevenueDropdownValue(currentTarget.innerText || salesDropdownValue);
   };
 
-   const loadfacilities = ()=>{Facilities().then(response => {
-    setNf(response)
-   
-  });};
+   const loadfacilities = ()=>{Facilities().then(response => {setNf(response)});};
+   const loadPatients = ()=>{
+    
+    TotalPatients().then(response => {setPatientstotal(response)});
+  };
 
 
   // Dropdown menu template for the DefaultStatisticsCard
@@ -91,11 +92,14 @@ function Sales() {
 
   useEffect(() => {
     loadfacilities();
+    loadPatients();
+   
   }, []);
 
   // useEffect(() => {
   //  loadfacilities()
   // })
+   //  loadPatients();
 
   return (
     <PageLayout>
@@ -141,7 +145,7 @@ function Sales() {
             <Grid item xs={12} sm={3}>
               <DefaultStatisticsCard
                 title="Number Patients"
-                count="20,000"
+                count={patientstotal}
                 percentage={{
                   color: "success",
                   value: "+12%",
