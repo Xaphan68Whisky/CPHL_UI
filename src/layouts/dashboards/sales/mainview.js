@@ -33,12 +33,13 @@ import horizontalBarChartData from "layouts/dashboards/sales/data/horizontalBarC
 import salesTableData from "layouts/dashboards/sales/data/salesTableData";
 import dataTableData from "layouts/dashboards/sales/data/dataTableData";
 
-import {Facilities,TotalPatients} from "utils/APIUtils"
+import {Facilities,TotalPatients,TotalSpecimen} from "utils/APIUtils"
 
 function Sales() {
   const [nf,setNf] = useState();
   const [samples,setSamples] = useState();
   const [patientstotal,setPatientstotal] = useState();
+  const [specimentotal,setSpecimentotal] = useState();
 
   // DefaultStatisticsCard state for the dropdown value
   const [salesDropdownValue, setSalesDropdownValue] = useState("6 May - 7 May");
@@ -68,10 +69,9 @@ function Sales() {
   };
 
    const loadfacilities = ()=>{Facilities().then(response => {setNf(response)});};
-   const loadPatients = ()=>{
-    
-    TotalPatients().then(response => {setPatientstotal(response)});
-  };
+   const loadPatients = ()=>{TotalPatients().then(response => {setPatientstotal(response)});};
+   const loadSpecimens = ()=>{TotalSpecimen().then(response => {setSpecimentotal(response)});};
+
 
 
   // Dropdown menu template for the DefaultStatisticsCard
@@ -93,6 +93,7 @@ function Sales() {
   useEffect(() => {
     loadfacilities();
     loadPatients();
+    loadSpecimens();
    
   }, []);
 
@@ -116,7 +117,7 @@ function Sales() {
                 count={nf}
                 percentage={{
                   color: "success",
-                  //label: "YTD",
+                  value: "YTD",
                 }}
                 // dropdown={{
                 //   action: openSalesDropdown,
@@ -128,42 +129,45 @@ function Sales() {
 
             <Grid item xs={12} sm={3}>
               <DefaultStatisticsCard
-                title="Number of Samples"
-                count="230,220"
-                percentage={{
+                title="Samples Collected"
+                count={specimentotal}
+                 percentage={{
                   color: "success",
-                  value: "+55%",
-                  label: "since last month",
-                }}
-                dropdown={{
-                  action: openSalesDropdown,
-                  menu: renderMenu(salesDropdown, closeSalesDropdown),
-                  value: salesDropdownValue,
-                }}
+                  value: "YTD",
+                //   color: "success",
+                //   value: "+55%",
+                //   label: "since last month",
+                 }}
+                // dropdown={{
+                //   action: openSalesDropdown,
+                //   menu: renderMenu(salesDropdown, closeSalesDropdown),
+                //   value: salesDropdownValue,
+                // }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
               <DefaultStatisticsCard
-                title="Number Patients"
+                title="Patients"
                 count={patientstotal}
-                percentage={{
-                  color: "success",
-                  value: "+12%",
-                  label: "since last month",
-                }}
-                dropdown={{
-                  action: openCustomersDropdown,
-                  menu: renderMenu(customersDropdown, closeCustomersDropdown),
-                  value: customersDropdownValue,
-                }}
+                 percentage={{
+                   color: "success",
+                   value: "YTD",
+                //   value: "+12%",
+                //   label: "since last month",
+                 }}
+                // dropdown={{
+                //   action: openCustomersDropdown,
+                //   menu: renderMenu(customersDropdown, closeCustomersDropdown),
+                //   value: customersDropdownValue,
+                // }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
               <DefaultStatisticsCard
-                title="avg samples"
+                title="Tests Done"
                 count="400"
                 percentage={{
-                  color: "secondary",
+                  color: "success",
                   value: "+$213",
                   label: "since last month",
                 }}

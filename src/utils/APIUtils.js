@@ -65,6 +65,20 @@ export function TotalPatients(){
     });
 }
 
+export function TotalSpecimen(){
+    return request({
+        url: API_BASE_URL + "/fac/specN",
+        method: 'GET'
+    });
+}
+
+export function TotalTest(){
+    return request({
+        url: API_BASE_URL + "/fac/TestT",
+        method: 'GET'
+    });
+}
+
 
 
 // export function getAllusers(){
