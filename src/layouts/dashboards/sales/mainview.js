@@ -33,7 +33,8 @@ import horizontalBarChartData from "layouts/dashboards/sales/data/horizontalBarC
 import salesTableData from "layouts/dashboards/sales/data/salesTableData";
 import dataTableData from "layouts/dashboards/sales/data/dataTableData";
 
-import {Facilities,TotalPatients,TotalSpecimen} from "utils/APIUtils"
+
+import {Facilities,TotalPatients,TotalSpecimen,TotalTest} from "utils/APIUtils"
 
 function Sales() {
   const [nf,setNf] = useState();
@@ -71,6 +72,7 @@ function Sales() {
    const loadfacilities = ()=>{Facilities().then(response => {setNf(response)});};
    const loadPatients = ()=>{TotalPatients().then(response => {setPatientstotal(response)});};
    const loadSpecimens = ()=>{TotalSpecimen().then(response => {setSpecimentotal(response)});};
+
 
 
 
