@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMaterialUIController } from "context";
+import { TextField } from '@mui/material';
+import MDInput from "components/MDInput";
 // @mui material components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,6 +14,11 @@ import Card from "@mui/material/Card";
 import Autocomplete from "@mui/material/Autocomplete";
 import selectData from "layouts/pages/account/settings/components/BasicInfo/data/selectData";
 import FormField from "layouts/pages/account/components/FormField";
+import MDDatePicker from "components/MDDatePicker";
+//import { PieChart } from '@mui/x-charts/PieChart';
+
+// react-chartjs-2 components
+//import { Pie } from "react-chartjs-2";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
@@ -29,7 +36,7 @@ import DefaultLineChart from "constants/charts/DefaultLineChart";
 import HorizontalBarChart from "examples/Charts/BarCharts/HorizontalBarChart";
 import SalesTable from "examples/Tables/SalesTable";
 import DataTable from "examples/Tables/DataTable";
-
+import { Pie } from "react-chartjs-2";
 import PieChart from "examples/Charts/PieChart";
 
 // Sales dashboard components
@@ -41,11 +48,13 @@ import Sidenav from "examples/Sidenav";
 import horizontalBarChartData from "layouts/dashboards/sales/data/horizontalBarChartData";
 import salesTableData from "layouts/dashboards/sales/data/salesTableData";
 import dataTableData from "layouts/dashboards/sales/data/dataTableData";
+// Data
+import dataTableData1 from "layouts/ecommerce/orders/order-list/data/dataTableData";
 
 
-import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload} from "utils/APIUtils"
+import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad} from "utils/APIUtils"
 
-function Sales() {
+function Home() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -58,6 +67,7 @@ function Sales() {
   const [male,setMale] = useState([]);
   const [female,setFemale] = useState([]);
   const [sysL,setSysL]=useState([]);
+  const [cate,setCate]=useState([])
 
   // DefaultStatisticsCard state for the dropdown value
   const [salesDropdownValue, setSalesDropdownValue] = useState("6 May - 7 May");
@@ -92,8 +102,16 @@ function Sales() {
   const loadSpecimens = ()=>{TotalSpecimen().then(response => {setSpecimentotal(response)});};
   const loadTesttotals = ()=>{TotalTest().then(response => {setTesttotal(response)});};
 
-  const loadgenderD = ()=>{GenderTotal().then(response =>{
-    response.forEach((item,index)=>{
+  const loadCategories = () =>{ CatLoad().then(response => {setCate(response)});
+ 
+ 
+  };
+
+  //alert(JSON.stringify(cate))
+  
+
+  const loadgenderD = ()=>{GenderTotal().then(response =>{setGendertotal(response);
+    gendertotal.forEach((item,index)=>{
       if(item.sex =="FEMALE"){
         female.push(item.total);
         
@@ -103,8 +121,8 @@ function Sales() {
       }
       
     });
-    console.log(male)
-   // console.log(female)
+    // console.log(male)
+    // console.log(female)
     });};
 
 
@@ -127,9 +145,7 @@ function Sales() {
     //   })
     // }
 
-    const loadCategories = () =>{
-
-    };
+    
 
     const me=23;
     const you=59;
@@ -143,18 +159,25 @@ function Sales() {
     //   },
     // };
 
+    function getMonthName(monthNumber) {
+      const date = new Date();
+      date.setMonth(monthNumber - 1);
+    
+      return date.toLocaleString('en-US', { month: 'short' });
+    }
+
     const channelChartData = {
-      labels: ["Facebook", "Direct", "Organic", "Referral"],
+      labels: cate.map((data) => data.name),
       datasets: {
-        label: "Projects",
-        backgroundColors: ["info", "primary", "dark", "secondary", "primary"],
-    data: [me,you],
+        label:cate.map((data) => data.name),
+        backgroundColors: ["primary","secondary","info","success","warning","error","light", "dark"],
+       data: cate.map((data) => data.total),
       },
     };
 
 //const tryme = [0,10, 30, 40, 120, 150, 220, 280, 250, 280,];
   const defaultLineChartData = {
-    labels: ["Jan","Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct","Nov","Dec"],
+    labels: gendertotal.map((data) =>  getMonthName(data.month)),
     datasets: [
       {
         label: "Female",
@@ -207,113 +230,147 @@ function Sales() {
     </Menu>
   );
 
-  // useEffect(() => {
-    
- 
-  //      GenderTotal.then(response => {
-        
-  //   alert("Yes")
-  //   console.log("wE ARE TOGETHER")
-  //   //     for ( dataObj of response.data ) {
-  //   //     //  console.log( dataObj )
-
-  //   //     console.log("wE ARE TOGETHER")
-  //   //     }
-
-  //      });
-     
-   
-  // }, []);
-
   useEffect(() => {
-    loadSys();
-    loadgenderD();
+    loadCategories()
+    // loadSys();
+     loadgenderD();
    
    }, []);
 
-   useEffect(() => {
-    loadfacilities();
-    loadPatients();
-    loadSpecimens();
-    loadTesttotals();
+  //  useEffect(() => {
+  //   loadfacilities();
+  //   loadPatients();
+  //   loadSpecimens();
+  //   loadTesttotals();
     
    
-   }, []);
+  //  }, []);
 
    //  loadPatients();
 {/* <DashboardNavbar /> */}
+
+const users = [
+  { firstName: "John", id: 1 },
+  { firstName: "Emily", id: 2 },
+  { firstName: "Michael", id: 3 },
+  { firstName: "Sarah", id: 4 },
+  { firstName: "David", id: 5 },
+  { firstName: "Jessica", id: 6 },
+  { firstName: "Daniel", id: 7 },
+  { firstName: "Olivia", id: 8 },
+  { firstName: "Matthew", id: 9 },
+  { firstName: "Sophia", id: 10 }
+]
+
+
+const [filter, setFilter] = useState('');
+const [searchItem, setSearchItem] = useState('')
+const [filteredUsers, setFilteredUsers] = useState(users)
+
+
+// const handleChangeFilter = event => {
+//   setFilter(event.target.value);
+// }
+
+// const handleInputChange = (e) => { 
+//   const searchTerm = e.target.value;
+
+//   setSearchItem(searchTerm)
+
+//   const filteredItems = users.filter((user) =>
+//   user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+
+    
+//     setFilteredUsers(filteredItems);
+// }
+
+
+
+const options = gendertotal.map((option) => {
+  const me = option.sex;
+    return {
+      firstName:  me,
+      ...option,
+    };
+  
+});
+
+const [value, setValue] = useState(options[0]);
+
+console.log(value)
+
+const label1 = ["2010", "2012", "2014", "2016", "2018"]
+const dataset1 = [
+  {
+    data: [2000, 4000, 2300, 2222, 3333],
+    backgroundColor: ["#003f5c", "#58508d", "#bc5090", "#ff6361", "#ffa600"]
+  }
+]
   return (
     <PageLayout>
 
 
         
         
-        <Toolbar >
-        <MDBox color="inherit" mb={{ xs: 3, md: 0 }} >
-          <h1>LDR</h1>
+        
+        
+        <Card >
+        
+        <MDBox mb={5}>
+
+        <Grid container spacing={7}>
+        <Grid item xs={0} sm={0}  ml={3}>
+        <MDBox color="inherit"  >
+          <h2>LDR</h2>
         </MDBox>
-        </Toolbar>
-
-        <Toolbar >
-
-        <Grid item xs={6} sm={8}>
-                 <Grid container spacing={3}>
-                  <Grid item xs={3} sm={3}>
-                    <Autocomplete
-                      defaultValue="All"
-                      options={selectData.birthDate}
-                      renderInput={(params) => (
-                        <FormField
-                          {...params}
-                          label="System"
-                          InputLabelProps={{ shrink: true }}
-                        />
-                      )}
+        </Grid>
+        {/* <Grid item xs={3} sm={3} pt={5} px={5} ml={10}></Grid> */}
+              <Grid item xs={12} sm={3}>
+                <Autocomplete
+                
+                     id="Facility"
+                       value={value}
+                      onChange={(event, newValue) => {
+                        setValue(newValue);
+                         }}
+                    options={options}
+                    sx={{ width: 300 }}
+                           //groupBy={(option) => option.firstLetter} sx={{ width: 30 }} 
+                       getOptionLabel={(option) => option.firstName}
+                       
+                     renderInput={(params) => <TextField {...params} label="Facility"  />}
                     />
-                  </Grid> 
+               </Grid> 
                   
-                 <Grid item xs={3} sm={3}>
-                    <Autocomplete
-                      defaultValue="February"
-                      options={selectData.birthDate}
-                      renderInput={(params) => (
-                        <FormField
-                          {...params}
-                          label="Facility"
-                          InputLabelProps={{ shrink: true }}
-                        />
-                      )}
-                    />
+                   <Grid item xs={0} sm={0}  >
+                   <MDDatePicker    input={{ placeholder: "Start Date" }}  />
+                   </Grid>
+
+
+                   <Grid  item xs={0} sm={0}>
+                   <MDDatePicker  input={{ placeholder: "Start Date" }}  size="medium"/>
+                   </Grid>
+
+                   <Grid  item xs={12} sm={3}>
+                   <MDDatePicker  input={{ placeholder: "Start Date" }}  size="medium"/>
+                   </Grid>
+                  
+                                  
+                 
+                 
+
                   </Grid> 
 
-                  <Grid item xs={3} sm={3}>
-                  {/* <DatePicker label="Basic date picker" /> */}
-                  </Grid>
+                  
+        </MDBox>
+        
+          </Card>
 
-                  {/* <Grid item xs={2} sm={2}>
-                    <Autocomplete
-                      defaultValue="1"
-                      options={selectData.days}
-                      renderInput={(params) => (
-                        <FormField {...params} InputLabelProps={{ shrink: true }} />
-                      )}
-                    />
-                    </Grid> */}
+          
 
-                    {/* <Grid item xs={12} sm={3}>
-                    <Autocomplete
-                      defaultValue="2021"
-                      options={selectData.years}
-                      renderInput={(params) => (
-                        <FormField {...params} InputLabelProps={{ shrink: true }} />
-                      )}
-                    />
-                  </Grid> */}
-                 
-                </Grid> 
-          </Grid>
-
-        </Toolbar>
+              
+        
         
         
          
@@ -398,33 +455,13 @@ function Sales() {
             <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
         <MDTypography variant="h6">Test Categories</MDTypography>
-        <Tooltip title="channels" placement="bottom" arrow>
-          <MDButton variant="outlined" color="secondary" size="small" circular iconOnly>
-            <Icon>priority_high</Icon>
-          </MDButton>
-        </Tooltip>
       </MDBox>
       <MDBox mt={3}>
         <Grid container alignItems="center">
-          <Grid item xs={7}>
-            <PieChart chart={channelChartData} height="12.5rem" />
+          <Grid item xs={12}>
+            <PieChart chart={channelChartData} height="15.2rem" />
           </Grid>
-          <Grid item xs={5}>
-            <MDBox pr={1}>
-              <MDBox mb={1}>
-                
-              </MDBox>
-              <MDBox mb={1}>
-                
-              </MDBox>
-              <MDBox mb={1}>
-                
-              </MDBox>
-              <MDBox mb={1}>
-                
-              </MDBox>
-            </MDBox>
-          </Grid>
+          
         </Grid>
       </MDBox>
       <MDBox
@@ -435,7 +472,6 @@ function Sales() {
         flexDirection={{ xs: "column", sm: "row" }}
         mt="auto"
       >
-        
       </MDBox>
     </Card>
 
@@ -449,7 +485,7 @@ function Sales() {
                       {/* <MDBadgeDot color="info" size="sm" badgeContent="Facebook Ads" />
                       <MDBadgeDot color="dark" size="sm" badgeContent="Google Ads" /> */}
                     </MDBox>
-                    {/* <MDBox mt={-4} mr={-1} position="absolute" right="1.5rem">
+                    <MDBox mt={-4} mr={-1} position="absolute" right="1.5rem">
                       <Tooltip title="See which ads perform better" placement="left" arrow>
                         <MDButton
                           variant="outlined"
@@ -461,7 +497,7 @@ function Sales() {
                           <Icon>priority_high</Icon>
                         </MDButton>
                       </Tooltip>
-                    </MDBox> */}
+                    </MDBox> 
                   </MDBox>
                 }
                 chart={defaultLineChartData}
@@ -471,19 +507,19 @@ function Sales() {
         </MDBox>
         <MDBox mb={3}>
           <Grid container spacing={2}>
-            {/* <Grid item xs={12} lg={8}>
+             <Grid item xs={12} lg={8}>
               <HorizontalBarChart title="Test Done By Age" chart={horizontalBarChartData} />
-            </Grid> */}
-            {/* <Grid item xs={12} lg={4}>
+            </Grid> 
+            <Grid item xs={12} lg={4}>
               <SalesTable title="Test By Status" rows={salesTableData} />
-            </Grid> */}
+            </Grid> 
           </Grid>
         </MDBox>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>
               <MDBox pt={3} px={3}>
-                <MDTypography variant="h6" fontWeight="medium">
+                <MDTypography variant="h4" fontWeight="medium">
                 Test By Status
                 </MDTypography>
               </MDBox>
@@ -499,9 +535,31 @@ function Sales() {
             </Card> 
           </Grid>
         </Grid>
+
+        <MDBox my={3}>
+        
+        <Card>
+        <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2} pt={3} px={3}>
+        <MDTypography variant="h4" fontWeight="medium" >
+                Test By Status
+                </MDTypography>
+          <MDBox display="flex">
+            
+            <MDBox ml={1}>
+              <MDButton variant="outlined" color="dark">
+                <Icon>description</Icon>
+                &nbsp;export csv
+              </MDButton>
+            </MDBox>
+          </MDBox>
+        </MDBox>
+          <DataTable table={dataTableData1} entriesPerPage={false} canSearch />
+        </Card>
+      </MDBox>
       </MDBox>
       <Footer />
     </PageLayout>
   );
 }
-export default Sales;
+
+export default Home;

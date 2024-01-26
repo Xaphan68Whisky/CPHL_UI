@@ -166,7 +166,7 @@ const loadCurrentUser = ()=> {
       
       <Routes>
         {getRoutes(routes)}
-        <Route path="" element={<Navigate to= "/dashboards/sales/mainview"/>} />
+        <Route path="" element={<Navigate to= "/Home"/>} />
       </Routes>
     </ThemeProvider>
   );

@@ -45,7 +45,7 @@ import dataTableData from "layouts/dashboards/sales/data/dataTableData";
 
 import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload} from "utils/APIUtils"
 
-function Sales() {
+function Home() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -439,6 +439,9 @@ function Sales() {
       </MDBox>
     </Card>
 
+
+
+
             </Grid>
             <Grid item xs={12} sm={6} lg={8}>
               <DefaultLineChart
@@ -504,4 +507,5 @@ function Sales() {
     </PageLayout>
   );
 }
-export default Sales;
+
+export default Home;

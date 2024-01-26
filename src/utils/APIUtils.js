@@ -86,6 +86,20 @@ export function GenderTotal(){
     });
 }
 
+export function Systemload(){
+    return request({
+        url: API_BASE_URL + "/fil/sysl/",
+        method: 'GET'
+    });
+}
+
+export function CatLoad(){
+    return request({
+        url: API_BASE_URL + "/fac/cat",
+        method: 'GET'
+    });
+}
+
 
 
 // export function getAllusers(){

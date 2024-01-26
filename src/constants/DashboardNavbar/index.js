@@ -133,10 +133,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <Toolbar >
         <MDBox color="inherit" mb={{ xs: 3, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <h1>CPHL</h1>
+          <h1>LDR</h1>
         </MDBox>
         <Grid item xs={6} sm={8}>
-                <Grid container spacing={3}>
+                 <Grid container spacing={3}>
                   <Grid item xs={6} sm={5}>
                     <Autocomplete
                       defaultValue="February"
@@ -149,9 +149,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid> 
 
-                  <Grid item xs={2} sm={2}>
+                  {/* <Grid item xs={2} sm={2}>
                     <Autocomplete
                       defaultValue="February"
                       options={selectData.birthDate}
@@ -163,9 +163,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
 
-                  <Grid item xs={2} sm={2}>
+                  {/* <Grid item xs={2} sm={2}>
                     <Autocomplete
                       defaultValue="1"
                       options={selectData.days}
@@ -173,9 +173,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
                         <FormField {...params} InputLabelProps={{ shrink: true }} />
                       )}
                     />
-                    </Grid>
+                    </Grid> */}
 
-                    <Grid item xs={12} sm={3}>
+                    {/* <Grid item xs={12} sm={3}>
                     <Autocomplete
                       defaultValue="2021"
                       options={selectData.years}
@@ -183,9 +183,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
                         <FormField {...params} InputLabelProps={{ shrink: true }} />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
                  
-                </Grid>
+                </Grid> 
           </Grid>
 
             <MDBox >

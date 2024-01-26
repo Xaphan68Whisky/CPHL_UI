@@ -1,6 +1,7 @@
 // CPHL Routes
 import Analytics from "layouts/dashboards/analytics";
 import Sales from "layouts/dashboards/sales/mainview";
+import Landing from "Home";
 import ProfileOverview from "layouts/pages/profile/profile-overview";
 import AllProjects from "layouts/pages/profile/all-projects";
 import NewUser from "layouts/pages/users/new-user";
@@ -62,6 +63,12 @@ const routes = [
         route: "/authentication/sign-in/basic",
         component: <SignInBasic />,
       },
+       {
+        name: "Logout",
+        key: "logout",
+        route: "/authentication/sign-in/basic",
+        component: <SignInBasic />,
+      },
 
 
     ],
@@ -69,7 +76,7 @@ const routes = [
   { type: "divider", key: "divider-0" },
   {
     type: "collapse",
-    name: "Dashboards",
+    name: "Dashboards**1",
     key: "dashboards",
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
@@ -78,6 +85,12 @@ const routes = [
         key: "analytics",
         route: "/dashboards/analytics",
         component: <Analytics />,
+      },
+      {
+        name: "Home",
+        key: "home",
+        route: "Home",
+        component: <Landing />,
       },
   
       {

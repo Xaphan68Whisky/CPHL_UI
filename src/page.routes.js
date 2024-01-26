@@ -18,6 +18,10 @@ const pageRoutes = [
             name: "sales",
             route: "/dashboards/sales",
           },
+          {
+            name: "sales",
+            route: "/dashboards/sales",
+          },
         ],
       },
       {
