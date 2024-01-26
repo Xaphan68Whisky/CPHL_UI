@@ -79,6 +79,13 @@ export function TotalTest(){
     });
 }
 
+export function GenderTotal(){
+    return request({
+        url: API_BASE_URL + "/fac/Gend",
+        method: 'GET'
+    });
+}
+
 
 
 // export function getAllusers(){

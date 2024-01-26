@@ -23,8 +23,8 @@ import AU from "assets/images/icons/flags/AU.png";
 const salesTableData = [
   {
     country: [US, "united state"],
-    sales: 2500,
-    bounce: "29.9%",
+    Avg: 2500,
+    Target: "29.9%",
   },
   {
     country: [DE, "germany"],
