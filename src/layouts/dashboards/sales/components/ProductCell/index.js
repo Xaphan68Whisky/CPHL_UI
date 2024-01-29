@@ -24,9 +24,9 @@ import MDAvatar from "components/MDAvatar";
 function ProductCell({ image, name, orders }) {
   return (
     <MDBox display="flex" alignItems="center" pr={2}>
-      <MDBox mr={2}>
+      {/* <MDBox mr={2}>
         <MDAvatar src={image} alt={name} />
-      </MDBox>
+      </MDBox> */}
       <MDBox display="flex" flexDirection="column">
         <MDTypography variant="button" fontWeight="medium">
           {name}

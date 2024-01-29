@@ -52,7 +52,15 @@ import dataTableData from "layouts/dashboards/sales/data/dataTableData";
 import dataTableData1 from "layouts/ecommerce/orders/order-list/data/dataTableData";
 
 
-import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad} from "utils/APIUtils"
+import IdCell from "layouts/ecommerce/orders/order-list/components/IdCell";
+import DefaultCell from "layouts/ecommerce/orders/order-list/components/DefaultCell";
+import StatusCell from "layouts/ecommerce/orders/order-list/components/StatusCell";
+import CustomerCell from "layouts/ecommerce/orders/order-list/components/CustomerCell";
+
+
+
+import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad,
+  Tsummary,SpecSummary} from "utils/APIUtils"
 
 function Home() {
   const [controller] = useMaterialUIController();
@@ -67,7 +75,9 @@ function Home() {
   const [male,setMale] = useState([]);
   const [female,setFemale] = useState([]);
   const [sysL,setSysL]=useState([]);
-  const [cate,setCate]=useState([])
+  const [cate,setCate]=useState([]);
+  const [tsummary,setTsummary] = useState([]);
+  const [specSummary,setSpecSummary] = useState([]);
 
   // DefaultStatisticsCard state for the dropdown value
   const [salesDropdownValue, setSalesDropdownValue] = useState("6 May - 7 May");
@@ -101,11 +111,9 @@ function Home() {
   const loadPatients = ()=>{TotalPatients().then(response => {setPatientstotal(response)});};
   const loadSpecimens = ()=>{TotalSpecimen().then(response => {setSpecimentotal(response)});};
   const loadTesttotals = ()=>{TotalTest().then(response => {setTesttotal(response)});};
-
-  const loadCategories = () =>{ CatLoad().then(response => {setCate(response)});
- 
- 
-  };
+  const loadCategories = () =>{ CatLoad().then(response => {setCate(response)}); };
+  const loadTsummary = () =>{Tsummary().then(response => {setTsummary(response)})};
+  const loadSpecSummary = () => {SpecSummary().then(response => {setSpecSummary(response)})};
 
   //alert(JSON.stringify(cate))
   
@@ -149,15 +157,15 @@ function Home() {
 
     const me=23;
     const you=59;
-
-    // const channelChartData = {
-    //   labels: ["Facebook", "Direct", "Organic", "Referral"],
-    //   datasets: {
-    //     label: "Projects",
-    //     backgroundColors: ["info", "primary", "dark", "secondary", "primary"],
-    // data: [me,you],
-    //   },
-    // };
+    
+    const channelChartData = {
+      labels: ["Facebook", "Direct", "Organic", "Referral"],
+      datasets: {
+        label: "Projects",
+        backgroundColors: ["info", "primary", "dark", "secondary", "primary"],
+    data: [me,you],
+      },
+    };
 
     function getMonthName(monthNumber) {
       const date = new Date();
@@ -166,46 +174,45 @@ function Home() {
       return date.toLocaleString('en-US', { month: 'short' });
     }
 
-    const channelChartData = {
-      labels: cate.map((data) => data.name),
-      datasets: {
-        label:cate.map((data) => data.name),
-        backgroundColors: ["primary","secondary","info","success","warning","error","light", "dark"],
-       data: cate.map((data) => data.total),
-      },
-    };
-
-//const tryme = [0,10, 30, 40, 120, 150, 220, 280, 250, 280,];
-  const defaultLineChartData = {
-    labels: gendertotal.map((data) =>  getMonthName(data.month)),
-    datasets: [
-      {
-        label: "Female",
-        color: "info",
-        data: female,
-      },
-      {
-        label: "Male",
-        color: "dark",
-        data: male,
-      },
-    ],
-  };
-
+    // const channelChartData = {
+    //   labels: GenderCatData.map((data) => ),
+    //   datasets: {
+    //     label:GenderCatData.map((data) => data.category),
+    //     backgroundColors: ["primary","secondary","info","success","warning","error","light", "dark"],
+    //    data: GenderCatData.map((data) => {data.mine}),
+    //   },
+    // };
 
   // const defaultLineChartData = {
-  //   labels: ["A","B","C","D"],
-  //   datasets:[
+  //   labels: gendertotal.map((data) =>  getMonthName(data.month)),
+  //   datasets: [
   //     {
-  //       label:"female",
-  //       data:[200,150,300,100]
+  //       label: "Female",
+  //       color: "info",
+  //       data: female,
   //     },
   //     {
-  //       label:"male",
-  //       data:[30,26,70,85]
-  //     }
+  //       label: "Male",
+  //       color: "dark",
+  //       data: male,
+  //     },
   //   ],
   // };
+
+
+  const defaultLineChartData = {
+    labels: ["A","B","C","D"],
+    datasets:[
+      {
+        label:"female",
+        data:[200,150,300,100]
+      },
+      {
+        label:"male",
+        data:[30,26,70,85]
+      }
+    ],
+  };
 
 
 
@@ -231,20 +238,23 @@ function Home() {
   );
 
   useEffect(() => {
+    
+    loadSpecSummary()
     loadCategories()
-    // loadSys();
+     loadSys();
      loadgenderD();
+     loadTsummary()
    
    }, []);
 
-  //  useEffect(() => {
-  //   loadfacilities();
-  //   loadPatients();
-  //   loadSpecimens();
-  //   loadTesttotals();
+    useEffect(() => {
+     loadfacilities();
+     loadPatients();
+     loadSpecimens();
+    loadTesttotals();
     
    
-  //  }, []);
+    }, []);
 
    //  loadPatients();
 {/* <DashboardNavbar /> */}
@@ -298,7 +308,7 @@ const options = gendertotal.map((option) => {
 
 const [value, setValue] = useState(options[0]);
 
-console.log(value)
+
 
 const label1 = ["2010", "2012", "2014", "2016", "2018"]
 const dataset1 = [
@@ -307,13 +317,93 @@ const dataset1 = [
     backgroundColor: ["#003f5c", "#58508d", "#bc5090", "#ff6361", "#ffa600"]
   }
 ]
+
+
+const horizontalBarChartData3 = {
+   labels:cate.map((data) => data.category),
+  datasets: [
+    {
+      color: "warning",
+      data:cate.map((data) => data.mine),
+    },
+  ],
+};
+//Table settings for the Category by Gender
+const GenderCatData = {columns: [
+  { Header: "Category", accessor: "category", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Female", accessor: "female", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Male", accessor: "male", Cell: ({ value }) => <DefaultCell value={value}/>},
+],
+
+  rows:cate.map((data, index) => {
+
+    return{
+      category: data.specimen_Type,
+      female: data.facility,
+      male: data.specimen_accepted,
+    }
+  })
+}
+
+//Table setting for Test By Status Summary
+const specStatus = {columns: [
+  { Header: "Specimen Type", accessor: "specimen_Type", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Facility", accessor: "facility", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Accepted", accessor: "specimen_accepted", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Rejected", accessor: "specimen_rejected", Cell: ({ value }) =>  <DefaultCell  value={value }/>},
+  { Header: "Not Collected", accessor: "specimen_not_collected", Cell: ({ value }) => <DefaultCell value={value}/>},
+],
+
+  rows:specSummary.map((data, index) => {
+
+    return{
+      specimen_Type: data.specimen_Type,
+      facility: data.facility,
+      specimen_accepted: data.specimen_accepted,
+      specimen_rejected:data.specimen_rejected,
+      specimen_not_collected: data.specimen_not_collected,
+   
+      
+    }
+  })
+}
+
+
+
+
+
+
+//Tebale setting for Test By Status Summary
+const me5 = {columns: [
+  { Header: "Test", accessor: "standard_name", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Facility", accessor: "facility", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Approved", accessor: "approved", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Not Received", accessor: "not_Received", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Pending", accessor: "pending", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Started", accessor: "started", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Completed", accessor: "completed", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Verified", accessor: "verified", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "Specimenrejected", accessor: "specimen_rejected", Cell: ({ value }) => <DefaultCell value={value}/>},],
+
+  rows:tsummary.map((data, index) => {
+
+    return{
+      standard_name:data.standard_name,
+      facility:data.facility,
+      approved:data.approved,
+      not_Received:data.not_Received,
+      pending:data.pending,
+      started:data.started,
+      completed:data.completed,
+      verified:data.verified,
+      specimen_rejected:data.	specimen_rejected_at_analysis
+    }
+  })
+}
+
   return (
     <PageLayout>
 
-
-        
-        
-        
         
         <Card >
         
@@ -507,12 +597,12 @@ const dataset1 = [
         </MDBox>
         <MDBox mb={3}>
           <Grid container spacing={2}>
-             <Grid item xs={12} lg={8}>
-              <HorizontalBarChart title="Test Done By Age" chart={horizontalBarChartData} />
+             <Grid item xs={12} lg={12}>
+              <HorizontalBarChart title="Test Categories" chart={horizontalBarChartData3} />
             </Grid> 
-            <Grid item xs={12} lg={4}>
-              <SalesTable title="Test By Status" rows={salesTableData} />
-            </Grid> 
+            {/* <Grid item xs={12} lg={6}>
+              <DataTable table={GenderCatData} />
+            </Grid>  */}
           </Grid>
         </MDBox>
         <Grid container spacing={3}>
@@ -520,17 +610,18 @@ const dataset1 = [
             <Card>
               <MDBox pt={3} px={3}>
                 <MDTypography variant="h4" fontWeight="medium">
-                Test By Status
+               Sample Status
                 </MDTypography>
               </MDBox>
               <MDBox py={1}>
-                <DataTable
+              <DataTable table={specStatus} entriesPerPage={false} canSearch />
+                {/* <DataTable
                   table={dataTableData}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   isSorted={false}
                   noEndBorder
-                />
+                /> */}
               </MDBox>
             </Card> 
           </Grid>
@@ -541,7 +632,7 @@ const dataset1 = [
         <Card>
         <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2} pt={3} px={3}>
         <MDTypography variant="h4" fontWeight="medium" >
-                Test By Status
+                Test(s) Status
                 </MDTypography>
           <MDBox display="flex">
             
@@ -553,7 +644,7 @@ const dataset1 = [
             </MDBox>
           </MDBox>
         </MDBox>
-          <DataTable table={dataTableData1} entriesPerPage={false} canSearch />
+          <DataTable table={me5} entriesPerPage={false} canSearch />
         </Card>
       </MDBox>
       </MDBox>

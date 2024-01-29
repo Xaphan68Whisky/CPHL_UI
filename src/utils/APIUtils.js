@@ -95,11 +95,26 @@ export function Systemload(){
 
 export function CatLoad(){
     return request({
-        url: API_BASE_URL + "/fac/cat",
+        url: API_BASE_URL + "/fil/catGender",
         method: 'GET'
     });
 }
 
+//Get Test details Summary(Test by status)
+export function Tsummary(){
+    return request({
+        url: API_BASE_URL + "/fil/tsummary",
+        method: 'GET'
+    });
+}
+
+//Get Test details Summary(Test by Specimen)
+export function SpecSummary(){
+    return request({
+        url: API_BASE_URL + "/fil/specSummary",
+        method: 'GET'
+    });
+}
 
 
 // export function getAllusers(){
