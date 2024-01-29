@@ -38,6 +38,7 @@ import SalesTable from "examples/Tables/SalesTable";
 import DataTable from "examples/Tables/DataTable";
 import { Pie } from "react-chartjs-2";
 import PieChart from "examples/Charts/PieChart";
+import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
 
 // Sales dashboard components
 import ChannelsChart from "layouts/dashboards/sales/components/ChannelsChart";
@@ -78,6 +79,8 @@ function Home() {
   const [cate,setCate]=useState([]);
   const [tsummary,setTsummary] = useState([]);
   const [specSummary,setSpecSummary] = useState([]);
+  const [specsWe,setSpecsWe] = useState([]);
+  
 
   // DefaultStatisticsCard state for the dropdown value
   const [salesDropdownValue, setSalesDropdownValue] = useState("6 May - 7 May");
@@ -114,6 +117,7 @@ function Home() {
   const loadCategories = () =>{ CatLoad().then(response => {setCate(response)}); };
   const loadTsummary = () =>{Tsummary().then(response => {setTsummary(response)})};
   const loadSpecSummary = () => {SpecSummary().then(response => {setSpecSummary(response)})};
+  const loadMySpecimens = () =>{ loadMySpecimens().then(response =>{setSpecsWe(response)})};
 
   //alert(JSON.stringify(cate))
   
@@ -200,24 +204,6 @@ function Home() {
   // };
 
 
-  const defaultLineChartData = {
-    labels: ["A","B","C","D"],
-    datasets:[
-      {
-        label:"female",
-        data:[200,150,300,100]
-      },
-      {
-        label:"male",
-        data:[30,26,70,85]
-      }
-    ],
-  };
-
-
-
-   
-
 
 
 
@@ -238,20 +224,19 @@ function Home() {
   );
 
   useEffect(() => {
-    
+    loadTsummary();
+     loadCategories()
+     // loadSys();
+      loadgenderD();
+     
     loadSpecSummary()
-    loadCategories()
-     loadSys();
-     loadgenderD();
-     loadTsummary()
-   
    }, []);
 
     useEffect(() => {
      loadfacilities();
-     loadPatients();
-     loadSpecimens();
-    loadTesttotals();
+    loadPatients();
+    loadSpecimens();
+     loadTesttotals();
     
    
     }, []);
@@ -305,20 +290,21 @@ const options = gendertotal.map((option) => {
     };
   
 });
-
 const [value, setValue] = useState(options[0]);
 
 
 
-const label1 = ["2010", "2012", "2014", "2016", "2018"]
-const dataset1 = [
-  {
-    data: [2000, 4000, 2300, 2222, 3333],
-    backgroundColor: ["#003f5c", "#58508d", "#bc5090", "#ff6361", "#ffa600"]
-  }
-]
+const defaultLineChartData = {
+  labels:cate.map((data) => data.category),
+  datasets:[
+    {
+      label:"female",
+      data:cate.map((data) => data.mine),
+    }
+  ],
+};
 
-
+//Horiontal Bar graph showing Test Categories
 const horizontalBarChartData3 = {
    labels:cate.map((data) => data.category),
   datasets: [
@@ -328,6 +314,8 @@ const horizontalBarChartData3 = {
     },
   ],
 };
+
+
 //Table settings for the Category by Gender
 const GenderCatData = {columns: [
   { Header: "Category", accessor: "category", Cell: ({ value }) => <DefaultCell value={value}/>},
@@ -567,29 +555,9 @@ const me5 = {columns: [
 
             </Grid>
             <Grid item xs={12} sm={6} lg={8}>
-              <DefaultLineChart
-                title="Test patterns according to gender"
-                description={
-                  <MDBox display="flex" justifyContent="space-between">
-                    <MDBox display="flex" ml={-1}>
-                      {/* <MDBadgeDot color="info" size="sm" badgeContent="Facebook Ads" />
-                      <MDBadgeDot color="dark" size="sm" badgeContent="Google Ads" /> */}
-                    </MDBox>
-                    <MDBox mt={-4} mr={-1} position="absolute" right="1.5rem">
-                      <Tooltip title="See which ads perform better" placement="left" arrow>
-                        <MDButton
-                          variant="outlined"
-                          color="secondary"
-                          size="small"
-                          circular
-                          iconOnly
-                        >
-                          <Icon>priority_high</Icon>
-                        </MDButton>
-                      </Tooltip>
-                    </MDBox> 
-                  </MDBox>
-                }
+              <VerticalBarChart
+                title="Bar chart"
+                description="Sales related to age average"
                 chart={defaultLineChartData}
               />
             </Grid>
