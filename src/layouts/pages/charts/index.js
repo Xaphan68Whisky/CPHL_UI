@@ -127,7 +127,7 @@ function Charts() {
         <MDBox mb={6}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <DefaultDoughnutChart
+              
                 icon={{ color: "success", component: "donut_small" }}
                 title="Doughnut chart"
                 description="Affiliates program"

@@ -39,6 +39,7 @@ import DataTable from "examples/Tables/DataTable";
 import { Pie } from "react-chartjs-2";
 import PieChart from "examples/Charts/PieChart";
 import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
+import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
 
 // Sales dashboard components
 import ChannelsChart from "layouts/dashboards/sales/components/ChannelsChart";
@@ -61,7 +62,7 @@ import CustomerCell from "layouts/ecommerce/orders/order-list/components/Custome
 
 
 import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad,
-  Tsummary,SpecSummary} from "utils/APIUtils"
+  Tsummary,SpecSummary,MySpecimens} from "utils/APIUtils"
 
 function Home() {
   const [controller] = useMaterialUIController();
@@ -80,6 +81,8 @@ function Home() {
   const [tsummary,setTsummary] = useState([]);
   const [specSummary,setSpecSummary] = useState([]);
   const [specsWe,setSpecsWe] = useState([]);
+  const [startdate,setStartdate] = useState(new Date().toLocaleDateString());
+  const [enddate,setEnddate] = useState(new Date().toLocaleDateString());
   
 
   // DefaultStatisticsCard state for the dropdown value
@@ -117,7 +120,7 @@ function Home() {
   const loadCategories = () =>{ CatLoad().then(response => {setCate(response)}); };
   const loadTsummary = () =>{Tsummary().then(response => {setTsummary(response)})};
   const loadSpecSummary = () => {SpecSummary().then(response => {setSpecSummary(response)})};
-  const loadMySpecimens = () =>{ loadMySpecimens().then(response =>{setSpecsWe(response)})};
+  const loadMySpecimens = () =>{ MySpecimens().then(response =>{setSpecsWe(response)})};
 
   //alert(JSON.stringify(cate))
   
@@ -141,7 +144,7 @@ function Home() {
     //get all Systems
 
     const loadSys = () =>{Systemload().then(response => {setSysL(response)})};
-    console.log(sysL);
+
 
     // response.forEach((item,index)=>{
     //   if(item.sex){
@@ -224,19 +227,20 @@ function Home() {
   );
 
   useEffect(() => {
-    loadTsummary();
-     loadCategories()
-     // loadSys();
-      loadgenderD();
+    //   loadMySpecimens()
+    //   loadTsummary();
+    //   loadCategories()
+    //   loadSys();
+    //   loadgenderD();
      
-    loadSpecSummary()
+    // loadSpecSummary()
    }, []);
 
     useEffect(() => {
-     loadfacilities();
-    loadPatients();
-    loadSpecimens();
-     loadTesttotals();
+    //  loadfacilities();
+    // loadPatients();
+    // loadSpecimens();
+    //  loadTesttotals();
     
    
     }, []);
@@ -295,15 +299,13 @@ const [value, setValue] = useState(options[0]);
 
 
 const defaultLineChartData = {
-  labels:cate.map((data) => data.category),
+  labels:specsWe.map((data) => data.specimen_Type),
   datasets:[
     {
-      label:"female",
-      data:cate.map((data) => data.mine),
+      data:specsWe.map((data) => data.result),
     }
   ],
 };
-
 //Horiontal Bar graph showing Test Categories
 const horizontalBarChartData3 = {
    labels:cate.map((data) => data.category),
@@ -357,7 +359,8 @@ const specStatus = {columns: [
 }
 
 
-
+console.log("Am empty")
+console.log(enddate)
 
 
 
@@ -391,14 +394,11 @@ const me5 = {columns: [
 
   return (
     <PageLayout>
-
-        
-        <Card >
         
         <MDBox mb={5}>
 
         <Grid container spacing={7}>
-        <Grid item xs={0} sm={0}  ml={3}>
+        <Grid item xs={2} sm={2}  ml={3}>
         <MDBox color="inherit"  >
           <h2>LDR</h2>
         </MDBox>
@@ -413,7 +413,7 @@ const me5 = {columns: [
                         setValue(newValue);
                          }}
                     options={options}
-                    sx={{ width: 300 }}
+                   // sx={{ width: 300 }}
                            //groupBy={(option) => option.firstLetter} sx={{ width: 30 }} 
                        getOptionLabel={(option) => option.firstName}
                        
@@ -427,11 +427,7 @@ const me5 = {columns: [
 
 
                    <Grid  item xs={0} sm={0}>
-                   <MDDatePicker  input={{ placeholder: "Start Date" }}  size="medium"/>
-                   </Grid>
-
-                   <Grid  item xs={12} sm={3}>
-                   <MDDatePicker  input={{ placeholder: "Start Date" }}  size="medium"/>
+                   <MDDatePicker  input={{ placeholder: "End Date" }}  size="medium"/>
                    </Grid>
                   
                                   
@@ -442,8 +438,6 @@ const me5 = {columns: [
 
                   
         </MDBox>
-        
-          </Card>
 
           
 
@@ -526,18 +520,73 @@ const me5 = {columns: [
             </Grid>
           </Grid>
         </MDBox>
+
+
+        <MDBox>
+        <MDBox mt={3}   >
+        <Grid container spacing={3} alignItems="right">
+          <Grid item xs={12} sm={1}>
+            
+          </Grid>
+          <Grid item mt={1} xs={12} sm={1} sx={{ mt: 2 }}>
+
+           {/* <Autocomplete
+                id="Facility"
+               
+                value={value}
+                onChange={(event, newValue) => {setValue(newValue);}}
+                defaultValue="All"
+                getOptionLabel={(option) => option.firstName}
+                options={options}
+                      //groupBy={(option) => option.firstLetter} sx={{ width: 30 }} 
+                
+                renderInput={(params) => <MDInput {...params} variant="standard"  label="Facility" />}
+               />  */}
+
+
+{/* 
+           <Autocomplete
+              defaultValue="USD"
+              options={options}
+              renderInput={(params) => <MDInput {...params} variant="standard"  />}
+            />  */}
+          </Grid>
+          <Grid item xs={12} sm={1}>
+            <MDDatePicker  
+             id="StartDate"
+             onChange={(event, newValue) => {setStartdate(newValue)}}
+         
+            input={{ placeholder: "Start Date" }}  size="medium"/>
+          </Grid>
+          <Grid item xs={12} sm={1}>
+            <MDDatePicker  
+            id="EndDate"
+            selected={enddate}
+            //dateFormat="yyyy/MM/dd kk:mm:ss"
+            onChange={(date) => setEnddate(date) } 
+         
+            input={{ placeholder: "End Date" }}  size="medium"/>
+            
+          </Grid>
+        </Grid>
+      </MDBox>
+      </MDBox>
+
+
+
+
         <MDBox mb={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} lg={4}>
 
             <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
-        <MDTypography variant="h6">Test Categories</MDTypography>
+        <MDTypography variant="h6">Patient Category</MDTypography>
       </MDBox>
       <MDBox mt={3}>
         <Grid container alignItems="center">
           <Grid item xs={12}>
-            <PieChart chart={channelChartData} height="15.2rem" />
+            <DefaultDoughnutChart chart={channelChartData} height="15.2rem" />
           </Grid>
           
         </Grid>
@@ -556,8 +605,8 @@ const me5 = {columns: [
             </Grid>
             <Grid item xs={12} sm={6} lg={8}>
               <VerticalBarChart
-                title="Bar chart"
-                description="Sales related to age average"
+                title="Sample Classifications"
+                description=" "
                 chart={defaultLineChartData}
               />
             </Grid>

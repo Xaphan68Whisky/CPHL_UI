@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 
 
-import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider ,createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 
@@ -144,9 +144,14 @@ const loadCurrentUser = ()=> {
     </MDBox>
   );
   //"/authentication/sign-in/cover" /dashboards/analytics"authentication/sign-in/basic"
-
+  const darkTheme = createTheme({
+    palette: {//darkMode
+      mode: 'dark',
+    },
+  });
+ 
   return  (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
+    <ThemeProvider theme={darkMode ? themeDark : theme}> 
       <CssBaseline />
       {layout === "dashboard" && (
         <>

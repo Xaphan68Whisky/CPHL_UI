@@ -88,7 +88,7 @@ export function GenderTotal(){
 
 export function Systemload(){
     return request({
-        url: API_BASE_URL + "/fil/sysl/",
+        url: API_BASE_URL + "/fil/sysl",
         method: 'GET'
     });
 }
@@ -112,6 +112,13 @@ export function Tsummary(){
 export function SpecSummary(){
     return request({
         url: API_BASE_URL + "/fil/specSummary",
+        method: 'GET'
+    });
+}
+//Specimen Summary
+export function MySpecimens(){
+    return request({
+        url: API_BASE_URL + "/fil/mySummary",
         method: 'GET'
     });
 }

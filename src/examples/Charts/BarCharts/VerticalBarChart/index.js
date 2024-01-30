@@ -100,7 +100,7 @@ function VerticalBarChart({ icon, title, description, height, chart }) {
 
 // Setting default values for the props of VerticalBarChart
 VerticalBarChart.defaultProps = {
-  icon: { color: "info", component: "" },
+  icon: { color: "success", component: "" },
   title: "",
   description: "",
   height: "19.125rem",
@@ -110,14 +110,15 @@ VerticalBarChart.defaultProps = {
 VerticalBarChart.propTypes = {
   icon: PropTypes.shape({
     color: PropTypes.oneOf([
-      "primary",
-      "secondary",
-      "info",
+      
       "success",
       "warning",
       "error",
       "light",
       "dark",
+      "primary",
+      "secondary",
+      "info",
     ]),
     component: PropTypes.node,
   }),
