@@ -1,34 +1,25 @@
 import { useState, useEffect } from "react";
 import { useMaterialUIController } from "context";
 import { TextField } from '@mui/material';
-import MDInput from "components/MDInput";
 // @mui material components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Grid from "@mui/material/Grid";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
 import Card from "@mui/material/Card";
 import Autocomplete from "@mui/material/Autocomplete";
-import selectData from "layouts/pages/account/settings/components/BasicInfo/data/selectData";
-import FormField from "layouts/pages/account/components/FormField";
 import MDDatePicker from "components/MDDatePicker";
-//import { PieChart } from '@mui/x-charts/PieChart';
-
-// react-chartjs-2 components
-//import { Pie } from "react-chartjs-2";
+import MDInput from "components/MDInput";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
-import MDBadgeDot from "components/MDBadgeDot";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
 import PageLayout from "examples/LayoutContainers/PageLayout/mainviewlayout";
-import DashboardNavbar from "constants/DashboardNavbar";
 import Footer from 'constants/Footer';
 import DefaultStatisticsCard from "examples/Cards/StatisticsCards/DefaultStatisticsCard";
 //import DefaultLineChart from "examples/Charts/LineCharts/DefaultLineChart";
@@ -36,33 +27,16 @@ import DefaultLineChart from "constants/charts/DefaultLineChart";
 import HorizontalBarChart from "examples/Charts/BarCharts/HorizontalBarChart";
 import SalesTable from "examples/Tables/SalesTable";
 import DataTable from "examples/Tables/DataTable";
-import { Pie } from "react-chartjs-2";
-import PieChart from "examples/Charts/PieChart";
 import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
 import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
 
-// Sales dashboard components
-import ChannelsChart from "layouts/dashboards/sales/components/ChannelsChart";
-import Sidenav from "examples/Sidenav";
 
-// Data
-//import defaultLineChartData from "layouts/dashboards/sales/data/defaultLineChartData";
-import horizontalBarChartData from "layouts/dashboards/sales/data/horizontalBarChartData";
-import salesTableData from "layouts/dashboards/sales/data/salesTableData";
-import dataTableData from "layouts/dashboards/sales/data/dataTableData";
-// Data
-import dataTableData1 from "layouts/ecommerce/orders/order-list/data/dataTableData";
-
-
-import IdCell from "layouts/ecommerce/orders/order-list/components/IdCell";
 import DefaultCell from "layouts/ecommerce/orders/order-list/components/DefaultCell";
-import StatusCell from "layouts/ecommerce/orders/order-list/components/StatusCell";
-import CustomerCell from "layouts/ecommerce/orders/order-list/components/CustomerCell";
 
 
 
 import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad,
-  Tsummary,SpecSummary,MySpecimens} from "utils/APIUtils"
+  Tsummary,SpecSummary,MySpecimens,MyPatientSummary} from "utils/APIUtils"
 
 function Home() {
   const [controller] = useMaterialUIController();
@@ -83,17 +57,12 @@ function Home() {
   const [specsWe,setSpecsWe] = useState([]);
   const [startdate,setStartdate] = useState(new Date().toLocaleDateString());
   const [enddate,setEnddate] = useState(new Date().toLocaleDateString());
+  const [patienttypeSumary, setPatienttypeSumary] = useState([]);
   
 
   // DefaultStatisticsCard state for the dropdown value
   const [salesDropdownValue, setSalesDropdownValue] = useState("6 May - 7 May");
-  const [customersDropdownValue, setCustomersDropdownValue] = useState("6 May - 7 May");
-  const [revenueDropdownValue, setRevenueDropdownValue] = useState("6 May - 7 May");
-
-  // DefaultStatisticsCard state for the dropdown action
-  const [salesDropdown, setSalesDropdown] = useState(null);
-  const [customersDropdown, setCustomersDropdown] = useState(null);
-  const [revenueDropdown, setRevenueDropdown] = useState(null);
+  
 
   // DefaultStatisticsCard handler for the dropdown action
   const openSalesDropdown = ({ currentTarget }) => setSalesDropdown(currentTarget);
@@ -121,8 +90,8 @@ function Home() {
   const loadTsummary = () =>{Tsummary().then(response => {setTsummary(response)})};
   const loadSpecSummary = () => {SpecSummary().then(response => {setSpecSummary(response)})};
   const loadMySpecimens = () =>{ MySpecimens().then(response =>{setSpecsWe(response)})};
-
-  //alert(JSON.stringify(cate))
+  const loadSys = () =>{Systemload().then(response => {setSysL(response)})};
+  const loadPatienttype = () =>{MyPatientSummary().then(response =>{setPatienttypeSumary(response)})}
   
 
   const loadgenderD = ()=>{GenderTotal().then(response =>{setGendertotal(response);
@@ -136,14 +105,12 @@ function Home() {
       }
       
     });
-    // console.log(male)
-    // console.log(female)
     });};
 
 
-    //get all Systems
+   
 
-    const loadSys = () =>{Systemload().then(response => {setSysL(response)})};
+  
 
 
     // response.forEach((item,index)=>{
@@ -166,11 +133,11 @@ function Home() {
     const you=59;
     
     const channelChartData = {
-      labels: ["Facebook", "Direct", "Organic", "Referral"],
+      labels: patienttypeSumary.map((data) => data.patient_Type),
       datasets: {
-        label: "Projects",
+        labels: patienttypeSumary.map((data) => data.patient_Type),
         backgroundColors: ["info", "primary", "dark", "secondary", "primary"],
-    data: [me,you],
+    data: patienttypeSumary.map((data) => data.total),
       },
     };
 
@@ -180,33 +147,6 @@ function Home() {
     
       return date.toLocaleString('en-US', { month: 'short' });
     }
-
-    // const channelChartData = {
-    //   labels: GenderCatData.map((data) => ),
-    //   datasets: {
-    //     label:GenderCatData.map((data) => data.category),
-    //     backgroundColors: ["primary","secondary","info","success","warning","error","light", "dark"],
-    //    data: GenderCatData.map((data) => {data.mine}),
-    //   },
-    // };
-
-  // const defaultLineChartData = {
-  //   labels: gendertotal.map((data) =>  getMonthName(data.month)),
-  //   datasets: [
-  //     {
-  //       label: "Female",
-  //       color: "info",
-  //       data: female,
-  //     },
-  //     {
-  //       label: "Male",
-  //       color: "dark",
-  //       data: male,
-  //     },
-  //   ],
-  // };
-
-
 
 
 
@@ -226,24 +166,7 @@ function Home() {
     </Menu>
   );
 
-  useEffect(() => {
-    //   loadMySpecimens()
-    //   loadTsummary();
-    //   loadCategories()
-    //   loadSys();
-    //   loadgenderD();
-     
-    // loadSpecSummary()
-   }, []);
 
-    useEffect(() => {
-    //  loadfacilities();
-    // loadPatients();
-    // loadSpecimens();
-    //  loadTesttotals();
-    
-   
-    }, []);
 
    //  loadPatients();
 {/* <DashboardNavbar /> */}
@@ -391,66 +314,52 @@ const me5 = {columns: [
     }
   })
 }
+//filter function
+function filterMyData(event){
+  if(enddate && startdate !=null){
+
+  }
+
+}
+
+
+useEffect(() => {
+  loadPatienttype()
+    loadMySpecimens()
+    loadTsummary();
+    loadCategories()
+    loadSys();
+    loadgenderD();
+   
+  loadSpecSummary()
+ }, []);
+
+  useEffect(() => {
+   loadfacilities();
+  loadPatients();
+  loadSpecimens();
+   loadTesttotals();
+  
+ 
+  }, []);
 
   return (
     <PageLayout>
         
-        <MDBox mb={5}>
-
-        <Grid container spacing={7}>
-        <Grid item xs={2} sm={2}  ml={3}>
-        <MDBox color="inherit"  >
-          <h2>LDR</h2>
-        </MDBox>
-        </Grid>
-        {/* <Grid item xs={3} sm={3} pt={5} px={5} ml={10}></Grid> */}
-              <Grid item xs={12} sm={3}>
-                <Autocomplete
-                
-                     id="Facility"
-                       value={value}
-                      onChange={(event, newValue) => {
-                        setValue(newValue);
-                         }}
-                    options={options}
-                   // sx={{ width: 300 }}
-                           //groupBy={(option) => option.firstLetter} sx={{ width: 30 }} 
-                       getOptionLabel={(option) => option.firstName}
-                       
-                     renderInput={(params) => <TextField {...params} label="Facility"  />}
-                    />
-               </Grid> 
-                  
-                   <Grid item xs={0} sm={0}  >
-                   <MDDatePicker    input={{ placeholder: "Start Date" }}  />
-                   </Grid>
 
 
-                   <Grid  item xs={0} sm={0}>
-                   <MDDatePicker  input={{ placeholder: "End Date" }}  size="medium"/>
-                   </Grid>
-                  
-                                  
-                 
-                 
-
-                  </Grid> 
-
-                  
-        </MDBox>
-
-          
-
-              
         
-        
-        
-         
+           <Grid item xs={2} sm={2}  ml={3}>
+             <MDBox color="inherit"  >
+                 <h2>LDR</h2>
+              </MDBox>
+           </Grid>
       
       <MDBox py={3}>
-
+        
         <MDBox mb={3}>
           <Grid container spacing={3}>
+            
           <Grid item xs={12} sm={3}>
               <DefaultStatisticsCard
                 title="Facilities"
@@ -524,13 +433,9 @@ const me5 = {columns: [
 
         <MDBox>
         <MDBox mt={3}   >
-        <Grid container spacing={3} alignItems="right">
-          <Grid item xs={12} sm={1}>
-            
-          </Grid>
-          <Grid item mt={1} xs={12} sm={1} sx={{ mt: 2 }}>
-
-           {/* <Autocomplete
+        <Grid container spacing={2} alignItems="right">
+          <Grid item mt={1} xs={12} sm={1} sx={{ mt: 0 }}>
+           <Autocomplete
                 id="Facility"
                
                 value={value}
@@ -541,15 +446,8 @@ const me5 = {columns: [
                       //groupBy={(option) => option.firstLetter} sx={{ width: 30 }} 
                 
                 renderInput={(params) => <MDInput {...params} variant="standard"  label="Facility" />}
-               />  */}
-
-
-{/* 
-           <Autocomplete
-              defaultValue="USD"
-              options={options}
-              renderInput={(params) => <MDInput {...params} variant="standard"  />}
-            />  */}
+               />  
+               
           </Grid>
           <Grid item xs={12} sm={1}>
             <MDDatePicker  
@@ -564,9 +462,11 @@ const me5 = {columns: [
             selected={enddate}
             //dateFormat="yyyy/MM/dd kk:mm:ss"
             onChange={(date) => setEnddate(date) } 
-         
             input={{ placeholder: "End Date" }}  size="medium"/>
             
+          </Grid>
+          <Grid item xs={12} sm={1}>
+          <MDButton variant="text" color="info" onClick ={filterMyData()}>filter</MDButton>
           </Grid>
         </Grid>
       </MDBox>
@@ -649,7 +549,7 @@ const me5 = {columns: [
         <Card>
         <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2} pt={3} px={3}>
         <MDTypography variant="h4" fontWeight="medium" >
-                Test(s) Status
+                Tests Status
                 </MDTypography>
           <MDBox display="flex">
             

@@ -123,6 +123,13 @@ export function MySpecimens(){
     });
 }
 
+export function MyPatientSummary(){
+    return request({
+        url: API_BASE_URL + "/fil/ptSummary",
+        method: 'GET'
+    });
+}
+
 
 // export function getAllusers(){
 //     return request({
