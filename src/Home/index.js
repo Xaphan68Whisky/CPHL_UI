@@ -434,7 +434,7 @@ useEffect(() => {
         <MDBox>
         <MDBox mt={3}   >
         <Grid container spacing={2} alignItems="right">
-          <Grid item mt={1} xs={12} sm={1} sx={{ mt: 0 }}>
+          {/* <Grid item mt={1} xs={12} sm={1} sx={{ mt: 0 }}>
            <Autocomplete
                 id="Facility"
                
@@ -448,15 +448,15 @@ useEffect(() => {
                 renderInput={(params) => <MDInput {...params} variant="standard"  label="Facility" />}
                />  
                
-          </Grid>
-          <Grid item xs={12} sm={1}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={1}>
             <MDDatePicker  
              id="StartDate"
              onChange={(event, newValue) => {setStartdate(newValue)}}
          
             input={{ placeholder: "Start Date" }}  size="medium"/>
-          </Grid>
-          <Grid item xs={12} sm={1}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={1}>
             <MDDatePicker  
             id="EndDate"
             selected={enddate}
@@ -464,10 +464,10 @@ useEffect(() => {
             onChange={(date) => setEnddate(date) } 
             input={{ placeholder: "End Date" }}  size="medium"/>
             
-          </Grid>
-          <Grid item xs={12} sm={1}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={1}>
           <MDButton variant="text" color="info" onClick ={filterMyData()}>filter</MDButton>
-          </Grid>
+          </Grid> */}
         </Grid>
       </MDBox>
       </MDBox>
@@ -554,10 +554,10 @@ useEffect(() => {
           <MDBox display="flex">
             
             <MDBox ml={1}>
-              <MDButton variant="outlined" color="dark">
+              {/* <MDButton variant="outlined" color="dark">
                 <Icon>description</Icon>
                 &nbsp;export csv
-              </MDButton>
+              </MDButton> */}
             </MDBox>
           </MDBox>
         </MDBox>
