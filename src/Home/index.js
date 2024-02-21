@@ -25,19 +25,24 @@ import DefaultStatisticsCard from "examples/Cards/StatisticsCards/DefaultStatist
 //import DefaultLineChart from "examples/Charts/LineCharts/DefaultLineChart";
 import DefaultLineChart from "constants/charts/DefaultLineChart";
 import HorizontalBarChart from "examples/Charts/BarCharts/HorizontalBarChart";
+import MixedChart from "examples/Charts/MixedChart";
 import SalesTable from "examples/Tables/SalesTable";
 import DataTable from "examples/Tables/DataTable";
 import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
 import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
+import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 
 
 import DefaultCell from "layouts/ecommerce/orders/order-list/components/DefaultCell";
 
 
+//import salesTableData from "layouts/dashboards/sales/data/salesTableData";
 
 import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad,
-  Tsummary,SpecSummary,MySpecimens,MyPatientSummary} from "utils/APIUtils"
+  Tsummary,SpecSummary,MySpecimens,MyPatientSummary,NumberOfTestDone} from "utils/APIUtils"
 
+
+  //
 function Home() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
@@ -58,6 +63,8 @@ function Home() {
   const [startdate,setStartdate] = useState(new Date().toLocaleDateString());
   const [enddate,setEnddate] = useState(new Date().toLocaleDateString());
   const [patienttypeSumary, setPatienttypeSumary] = useState([]);
+  const [numberOfTestDone, setnumberOfTestDone] = useState([]);
+ 
   
 
   // DefaultStatisticsCard state for the dropdown value
@@ -92,6 +99,7 @@ function Home() {
   const loadMySpecimens = () =>{ MySpecimens().then(response =>{setSpecsWe(response)})};
   const loadSys = () =>{Systemload().then(response => {setSysL(response)})};
   const loadPatienttype = () =>{MyPatientSummary().then(response =>{setPatienttypeSumary(response)})}
+  const loadNumberOfTestDone = () =>{NumberOfTestDone().then(response =>{setnumberOfTestDone(response)})}
   
 
   const loadgenderD = ()=>{GenderTotal().then(response =>{setGendertotal(response);
@@ -112,20 +120,26 @@ function Home() {
 
   
 
+    const salesTableData = [
+      {
+        country: ["united state"],
+        Avg: 2500,
+        Target: "29.9%",
+      },
+      {
+        country: [ "germany"],
+        sales: "3.900",
+        bounce: "40.22%",
+      },
+      {
+        country: [ "great britain"],
+        sales: "1.400",
+        bounce: "23.44%",
+      },
+      { country: [ "brasil"], sales: 562, bounce: "32.14%" },
+      { country: [ "australia"], sales: 400, bounce: "56.83%" },
+    ];
 
-    // response.forEach((item,index)=>{
-    //   if(item.sex){
-    //     console.log(item.sex)
-    //   }
-    //   male.push(item.sex)
-    // });
-    
-    // if(gendertotal !==undefined){
-    //   //console.log(gendertotal)
-    //   gendertotal.map(function(data,index){
-        
-    //   })
-    // }
 
     
 
@@ -229,13 +243,60 @@ const defaultLineChartData = {
     }
   ],
 };
+
+const NumberOfTestsDone = {
+  labels:numberOfTestDone.map((data) => data.name),
+  datasets:[
+    {
+      color: "success",
+      data:numberOfTestDone.map((data) => data.totals),
+    }
+  ],
+};
+//Sum total figures of category
+const total = numberOfTestDone.reduce((prev,next) => prev + next.totals,0);
+
+console.log(total);
+
+// //Mixed chart data
+// const mixedChartData = {
+//   labels:specSummary.map((data) => data.specimen_Type),
+//   datasets: [
+//     {
+//       chartType: "thin-bar",
+//       label: "accepted specimen",
+//       color: "dark",
+//       data:specSummary.map((data) => data.specimen_accepted),
+//     },
+//     {
+//       chartType: "gradient-line",
+//       label: "Referral",
+//       color: "info",
+//       data:specSummary.map((data) => data.specimen_rejected),
+//     },
+//   ],
+// };
+ 
+//Mixed chart data
+  const mixedChartData = {
+    labels:specSummary.map((data) => data.specimen_Type),
+    datasets: [
+      {
+        chartType: "thin-bar",
+        label: "accepted specimen",
+        color: "success",
+        data:specSummary.map((data) => data.specimen_accepted),
+      }
+    ],
+  };
+
 //Horiontal Bar graph showing Test Categories
 const horizontalBarChartData3 = {
-   labels:cate.map((data) => data.category),
+   labels:cate.map((data) => data.name),
   datasets: [
     {
       color: "warning",
-      data:cate.map((data) => data.mine),
+      data:cate.map((data) => data.totals),
     },
   ],
 };
@@ -282,8 +343,22 @@ const specStatus = {columns: [
 }
 
 
-console.log("Am empty")
-console.log(enddate)
+//Table setting for Percentage Category
+const catComposition = {columns: [
+  { Header: "Test Category", accessor: "name", Cell: ({ value }) => <DefaultCell value={value}/>},
+  { Header: "percentage", accessor: "totals", Cell: ({ value }) => <DefaultCell value={value}/>},
+],
+
+  rows:cate.map((data, index) => {
+
+    return{
+      name: data.name,
+      totals: data.totals,
+   
+      
+    }
+  })
+}
 
 
 
@@ -321,15 +396,16 @@ function filterMyData(event){
   }
 
 }
-
+useEffect(() => {
+  loadNumberOfTestDone()}, []);
 
 useEffect(() => {
   loadPatienttype()
-    loadMySpecimens()
-    loadTsummary();
-    loadCategories()
-    loadSys();
-    loadgenderD();
+  loadMySpecimens()
+  loadTsummary();
+  loadCategories()
+   // loadSys();
+  //loadgenderD();
    
   loadSpecSummary()
  }, []);
@@ -476,9 +552,10 @@ useEffect(() => {
 
 
         <MDBox mb={2}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} lg={4}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} lg={2}>
 
+       
             <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
         <MDTypography variant="h6">Patient Category</MDTypography>
@@ -500,28 +577,84 @@ useEffect(() => {
         mt="auto"
       >
       </MDBox>
-    </Card>
+    </Card> 
 
             </Grid>
-            <Grid item xs={12} sm={6} lg={8}>
+            <Grid item xs={12} sm={6} lg={4}>
               <VerticalBarChart
+                color="success"
                 title="Sample Classifications"
                 description=" "
                 chart={defaultLineChartData}
               />
             </Grid>
+            <Grid item xs={12} sm={6} lg={6}>
+            
+              <HorizontalBarChart  title="Test Categories" chart={horizontalBarChartData3} />
+              
+            
+            </Grid>
           </Grid>
+
+
         </MDBox>
         <MDBox mb={3}>
           <Grid container spacing={2}>
              <Grid item xs={12} lg={12}>
-              <HorizontalBarChart title="Test Categories" chart={horizontalBarChartData3} />
+             {/* <Card sx={{ height: "100%" }}>
+              <HorizontalBarChart height= "93.2%" title="Test Categories" chart={horizontalBarChartData3} />
+              </Card> */}
+              {/* <MixedChart
+                title="Sample Status(Change the data source this data is already showing)"
+                height="19.75rem"
+                chart={mixedChartData}
+              /> */}
+              <Card sx={{ height: "100%" }}>
+                <VerticalBarChart height = "88.4%"
+                title="Tests Done"
+                description="Verifed test only"
+                chart={NumberOfTestsDone}
+              />
+              </Card>
             </Grid> 
-            {/* <Grid item xs={12} lg={6}>
+{/* 
+              <Grid item xs={12} lg={4}>
               <DataTable table={GenderCatData} />
-            </Grid>  */}
+            </Grid>    */}
           </Grid>
         </MDBox>
+
+
+        <Grid container spacing={2}>
+
+        <Grid item xs={12} sm={6} lg={4}>
+
+          <Card>
+            {/* <DefaultDoughnutChart chart={channelChartData} height="30.2rem" /> */}
+            </Card>
+            
+        </Grid>
+
+
+             <Grid item xs={12} lg={4}>
+              <Card sx={{ height: "100%" }}>
+              {/* <DataTable
+                  table={catComposition}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  isSorted={false}
+                  noEndBorder
+                /> */}
+              </Card>
+            </Grid> 
+          </Grid>
+
+        <MDBox my={3}>
+
+        
+      </MDBox>
+        
+
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

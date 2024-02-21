@@ -93,6 +93,7 @@ export function Systemload(){
     });
 }
 
+///Time
 export function CatLoad(){
     return request({
         url: API_BASE_URL + "/fil/catGender",
@@ -126,6 +127,13 @@ export function MySpecimens(){
 export function MyPatientSummary(){
     return request({
         url: API_BASE_URL + "/fil/ptSummary",
+        method: 'GET'
+    });
+}
+
+export function NumberOfTestDone(){
+    return request({
+        url: API_BASE_URL + "/fil/NumbersDone",
         method: 'GET'
     });
 }
