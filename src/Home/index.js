@@ -12,6 +12,7 @@ import Card from "@mui/material/Card";
 import Autocomplete from "@mui/material/Autocomplete";
 import MDDatePicker from "components/MDDatePicker";
 import MDInput from "components/MDInput";
+import CD4Histogram from './Charts/Histogram/index.js';
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
@@ -31,6 +32,8 @@ import DataTable from "examples/Tables/DataTable";
 import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
 import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
+
+
 
 
 import DefaultCell from "layouts/ecommerce/orders/order-list/components/DefaultCell";
@@ -147,11 +150,11 @@ function Home() {
     const you=59;
     
     const channelChartData = {
-      labels: patienttypeSumary.map((data) => data.patient_Type),
+      labels: patienttypeSumary.map((data) => data.visit_type),
       datasets: {
-        labels: patienttypeSumary.map((data) => data.patient_Type),
+        labels: patienttypeSumary.map((data) => data.visit_type),
         backgroundColors: ["info", "primary", "dark", "secondary", "primary"],
-    data: patienttypeSumary.map((data) => data.total),
+    data: patienttypeSumary.map((data) => data.totals),
       },
     };
 
@@ -162,6 +165,10 @@ function Home() {
       return date.toLocaleString('en-US', { month: 'short' });
     }
 
+
+
+     // Sample CD4 count data
+  const cd4Counts = [450, 600, 300, 700, 550, 400, 350, 800, 500, 650, 750, 550, 600, 700, 400];
 
 
   // Dropdown menu template for the DefaultStatisticsCard
@@ -402,7 +409,7 @@ useEffect(() => {
 useEffect(() => {
   loadPatienttype()
   loadMySpecimens()
-  loadTsummary();
+ // loadTsummary();
   loadCategories()
    // loadSys();
   //loadgenderD();
@@ -580,7 +587,7 @@ useEffect(() => {
     </Card> 
 
             </Grid>
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} lg={6}>
               <VerticalBarChart
                 color="success"
                 title="Sample Classifications"
@@ -588,7 +595,7 @@ useEffect(() => {
                 chart={defaultLineChartData}
               />
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid item xs={12} sm={6} lg={4}>
             
               <HorizontalBarChart  title="Test Categories" chart={horizontalBarChartData3} />
               
@@ -679,23 +686,14 @@ useEffect(() => {
 
         <MDBox my={3}>
         
-        <Card>
+        {/* <Card>
         <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2} pt={3} px={3}>
         <MDTypography variant="h4" fontWeight="medium" >
                 Tests Status
                 </MDTypography>
-          <MDBox display="flex">
-            
-            <MDBox ml={1}>
-              {/* <MDButton variant="outlined" color="dark">
-                <Icon>description</Icon>
-                &nbsp;export csv
-              </MDButton> */}
-            </MDBox>
-          </MDBox>
         </MDBox>
           <DataTable table={me5} entriesPerPage={false} canSearch />
-        </Card>
+        </Card> */}
       </MDBox>
       </MDBox>
       <Footer />
