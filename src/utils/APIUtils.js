@@ -3,10 +3,14 @@ import { API_BASE_URL, ACCESS_TOKEN } from '../constants';
 const request = (options) => {
 
     const headers2={
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // 'product':'llu.android',
+        // 'version':'4.7',
     }
     const headers = new Headers({
         'Content-Type': 'application/json',
+        // 'product':'llu.android',
+        // 'version':'4.7',
     })
 
     if(localStorage.getItem(ACCESS_TOKEN)) {
@@ -39,6 +43,17 @@ export function login(loginRequest) {
 
   
   }
+
+//   export function login(loginRequest) {
+   
+//     return request({
+//         url: "https://api.libreview.io/llu/auth/login",
+//         method: 'POST',
+//         body: JSON.stringify(loginRequest)
+//     });
+
+
+// }
 
 export function getCurrentUser() {
     console.log("I have been mounted")
@@ -139,6 +154,27 @@ export function NumberOfTestDone(){
 }
 
 
+
+export function Malariaresults(){
+    return request({
+        url: API_BASE_URL + "/fil/malariaT",
+        method: 'GET'
+    });
+}
+
+export function TBresults(){
+    return request({
+        url: API_BASE_URL + "/fil/tb",
+        method: 'GET'
+    });
+}
+
+export function HIVresults(){
+    return request({
+        url: API_BASE_URL + "/fil/hiv",
+        method: 'GET'
+    });
+}
 // export function getAllusers(){
 //     return request({
 //         url:API_BASE_URL +"/users",

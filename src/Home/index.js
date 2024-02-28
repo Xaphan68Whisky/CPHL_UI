@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useMaterialUIController } from "context";
 import { TextField } from '@mui/material';
+import MasterCard from "examples/Cards/MasterCard";
+import MultiProgress from 'react-multi-progress'
+
 // @mui material components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,6 +16,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import MDDatePicker from "components/MDDatePicker";
 import MDInput from "components/MDInput";
 import CD4Histogram from './Charts/Histogram/index.js';
+import MDBadgeDot from "components/MDBadgeDot";
+import Tooltip from "@mui/material/Tooltip";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
@@ -32,7 +37,7 @@ import DataTable from "examples/Tables/DataTable";
 import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
 import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-
+import GaugeChart from 'react-gauge-chart';
 
 
 
@@ -42,7 +47,7 @@ import DefaultCell from "layouts/ecommerce/orders/order-list/components/DefaultC
 //import salesTableData from "layouts/dashboards/sales/data/salesTableData";
 
 import {Facilities,TotalPatients,TotalSpecimen,TotalTest,GenderTotal,Systemload,CatLoad,
-  Tsummary,SpecSummary,MySpecimens,MyPatientSummary,NumberOfTestDone} from "utils/APIUtils"
+  Tsummary,SpecSummary,MySpecimens,MyPatientSummary,NumberOfTestDone,Malariaresults,TBresults,HIVresults} from "utils/APIUtils"
 
 
   //
@@ -67,7 +72,11 @@ function Home() {
   const [enddate,setEnddate] = useState(new Date().toLocaleDateString());
   const [patienttypeSumary, setPatienttypeSumary] = useState([]);
   const [numberOfTestDone, setnumberOfTestDone] = useState([]);
- 
+  const [malariasm, setMalariasm] = useState([]);
+  const [tbres, setTbres] = useState([]);
+  const [hiv, setHiv] = useState([]);
+  const [postiveCases, setPostiveCases] = useState(0);
+
   
 
   // DefaultStatisticsCard state for the dropdown value
@@ -101,9 +110,14 @@ function Home() {
   const loadSpecSummary = () => {SpecSummary().then(response => {setSpecSummary(response)})};
   const loadMySpecimens = () =>{ MySpecimens().then(response =>{setSpecsWe(response)})};
   const loadSys = () =>{Systemload().then(response => {setSysL(response)})};
-  const loadPatienttype = () =>{MyPatientSummary().then(response =>{setPatienttypeSumary(response)})}
-  const loadNumberOfTestDone = () =>{NumberOfTestDone().then(response =>{setnumberOfTestDone(response)})}
+  const loadPatienttype = () =>{MyPatientSummary().then(response =>{setPatienttypeSumary(response)})};
+  const loadNumberOfTestDone = () =>{NumberOfTestDone().then(response =>{setnumberOfTestDone(response)})};
+  const loaloadMariatest = () =>{Malariaresults().then(response =>{setMalariasm(response)})};
+  const loaloadTB = () =>{TBresults().then(response =>{setTbres(response)})};
+  const loaloadHIV = () =>{HIVresults().then(response =>{setHiv(response)})};
   
+
+
 
   const loadgenderD = ()=>{GenderTotal().then(response =>{setGendertotal(response);
     gendertotal.forEach((item,index)=>{
@@ -119,9 +133,6 @@ function Home() {
     });};
 
 
-   
-
-  
 
     const salesTableData = [
       {
@@ -143,6 +154,64 @@ function Home() {
       { country: [ "australia"], sales: 400, bounce: "56.83%" },
     ];
 
+    let mPostiveC = 0;
+    let mNegativeC = 0;
+    let mTotalC = 0;
+    let mPostiveCpr = 0;
+    let mNegativeCpr = 0;
+    let mTotalCpr = 0;
+    let mRatep = (mPostiveC/mTotalC);
+    let mRaten = (mNegativeC/mTotalC);
+
+    let tbPostiveC = 0;
+    let tbNegativeC = 0;
+    let tbTotalC = 0;
+    let tbPostiveCpr = 0;
+    let tbNegativeCpr = 0;
+    let tbTotalCpr = 0;
+    let tbRate = (tbPostiveC/tbTotalC);
+    let tbRaten = (tbNegativeC/tbTotalC);
+
+    let hivPostiveC = 0;
+    let hivNegativeC = 0;
+    let hivTotalC = 0;
+    let hivPostiveCpr = 0;
+    let hivNegativeCpr = 0;
+    let hivTotalCpr = 0;
+    let hivRate = (hivPostiveC/hivTotalC);
+    let hivRaten = (hivNegativeC/hivTotalC);
+
+    
+      const malaria = malariasm.map(data => {
+        mPostiveC = data.postiveCases
+        mNegativeC = data.negativeCases
+        mTotalC = data.totalCases
+        mPostiveCpr = data.prevpostiveCases;
+        mNegativeCpr = data.prevnegativeCases;
+        mTotalCpr = data.prevtotalCases;
+
+      });
+
+      const tb = tbres.map(data => {
+        tbPostiveC = data.postiveCases
+        tbNegativeC = data.negativeCases
+        tbTotalC = data.totalCases
+        tbPostiveCpr = data.prevpostiveCases;
+        tbNegativeCpr = data.prevnegativeCases;
+        tbTotalCpr = data.prevtotalCases;
+
+      });
+
+      const hivr = hiv.map(data => {
+        hivPostiveC = data.postiveCases
+        hivNegativeC = data.negativeCases
+        hivTotalC = data.totalCases
+        hivPostiveCpr = data.prevpostiveCases;
+        hivNegativeCpr = data.prevnegativeCases;
+        hivTotalCpr = data.prevtotalCases;
+
+      });
+  
 
     
 
@@ -230,6 +299,8 @@ const [filteredUsers, setFilteredUsers] = useState(users)
 
 
 
+
+
 const options = gendertotal.map((option) => {
   const me = option.sex;
     return {
@@ -263,28 +334,6 @@ const NumberOfTestsDone = {
 //Sum total figures of category
 const total = numberOfTestDone.reduce((prev,next) => prev + next.totals,0);
 
-console.log(total);
-
-// //Mixed chart data
-// const mixedChartData = {
-//   labels:specSummary.map((data) => data.specimen_Type),
-//   datasets: [
-//     {
-//       chartType: "thin-bar",
-//       label: "accepted specimen",
-//       color: "dark",
-//       data:specSummary.map((data) => data.specimen_accepted),
-//     },
-//     {
-//       chartType: "gradient-line",
-//       label: "Referral",
-//       color: "info",
-//       data:specSummary.map((data) => data.specimen_rejected),
-//     },
-//   ],
-// };
- 
-//Mixed chart data
   const mixedChartData = {
     labels:specSummary.map((data) => data.specimen_Type),
     datasets: [
@@ -367,7 +416,7 @@ const catComposition = {columns: [
   })
 }
 
-
+const value23 = "00.4"
 
 //Tebale setting for Test By Status Summary
 const me5 = {columns: [
@@ -401,27 +450,29 @@ function filterMyData(event){
   if(enddate && startdate !=null){
 
   }
-
+console.log("me")
 }
 useEffect(() => {
   loadNumberOfTestDone()}, []);
 
 useEffect(() => {
-  loadPatienttype()
+  //loadPatienttype()*
   loadMySpecimens()
  // loadTsummary();
   loadCategories()
    // loadSys();
   //loadgenderD();
-   
-  loadSpecSummary()
+  //loadSpecSummary();
+  loaloadMariatest();
+  loaloadTB();
+  loaloadHIV();
  }, []);
 
   useEffect(() => {
-   loadfacilities();
-  loadPatients();
-  loadSpecimens();
-   loadTesttotals();
+   //loadfacilities();*
+  //loadPatients();*
+  //loadSpecimens();*
+   //loadTesttotals();*
   
  
   }, []);
@@ -560,12 +611,12 @@ useEffect(() => {
 
         <MDBox mb={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} lg={2}>
+            <Grid item xs={12} sm={6} lg={6}>
 
        
-            <Card sx={{ height: "100%" }}>
+      <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
-        <MDTypography variant="h6">Patient Category</MDTypography>
+        <MDTypography variant="h6">Patient Visit type</MDTypography>
       </MDBox>
       <MDBox mt={3}>
         <Grid container alignItems="center">
@@ -584,9 +635,295 @@ useEffect(() => {
         mt="auto"
       >
       </MDBox>
-    </Card> 
+    </Card>
+     </Grid>
+     
+     <Grid item xs={0} sm={0} lg={2} mx={0.1}>
+      {/* Grid for Malaria Rates */}
+      <Card sx={{ width: 300 }} >
+         <MDBox pt={8} px={3}>
+              <MDTypography variant="h6" fontWeight="medium">
+               Malaria +ve Rates
+                </MDTypography>
+                </MDBox>
+                
+              <GaugeChart title="GAUGE" id="gauge-chart1" 
+               nrOfLevels={30} 
+               percent={mRatep} 
+               textColor={'#EA4228'}
+              />
 
-            </Grid>
+                
+              <MDBox pt={8} px={3}>
+              <MDTypography variant="h6" fontWeight="medium">
+               Malaria +ve Rates
+                </MDTypography>
+                </MDBox>
+              <GaugeChart title="GAUGE" id="gauge-chart1" 
+               nrOfLevels={30} 
+               percent={mRaten} 
+               textColor={'#EA4228'}
+              />
+      </Card>
+      </Grid>
+
+      <Grid item xs={12} sm={6} lg={2} mx={-1}>
+      {/* Grid for HIV Rates */}
+      <Card sx={{ width: 300 }}>
+         <MDBox pt={8} px={3}>
+              <MDTypography variant="h6" fontWeight="medium">
+               HIV +ve Rates
+                </MDTypography>
+                </MDBox>
+              <GaugeChart title="GAUGE" id="gauge-chart1" 
+               nrOfLevels={30} 
+               percent={0.86} 
+               textColor={'#EA4228'}
+              />
+                
+              <MDBox pt={8} px={3}>
+              <MDTypography variant="h6" fontWeight="medium">
+               HIV +ve Rates
+                </MDTypography>
+                </MDBox>
+              <GaugeChart title="GAUGE" id="gauge-chart1" 
+               nrOfLevels={30} 
+               percent={0.86} 
+               textColor={'#EA4228'}
+              />
+      </Card>
+      </Grid>
+
+      <Grid item xs={12} sm={6} lg={2}>
+      {/* Grid for TB Rates */}
+      <Card sx={{ width: 300 }}>
+         <MDBox pt={8} px={3}>
+              <MDTypography variant="h6" fontWeight="medium">
+               TB +ve Rates
+                </MDTypography>
+                </MDBox>
+              <GaugeChart title="GAUGE" id="gauge-chart1" 
+               nrOfLevels={30} 
+               percent={0.86} 
+               textColor={'#EA4228'}
+              />
+
+                
+              <MDBox pt={8} px={3}>
+              <MDTypography variant="h6" fontWeight="medium">
+               TB +ve Rates
+                </MDTypography>
+                </MDBox>
+              <GaugeChart title="GAUGE" id="gauge-chart1" 
+               nrOfLevels={30} 
+               percent={0.86} 
+               textColor={'#EA4228'}
+              />
+      </Card>
+      </Grid>
+{/* 
+      <Grid container spacing={2} mt ={1.5}> */}
+  <Grid item xs={12} sm={6} lg={2}>
+    
+      
+        <DefaultStatisticsCard
+                title=" Total +ve Malaria Cases"
+                count={mPostiveC}
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+
+<MDBox my={3.2}>
+
+<DefaultStatisticsCard
+                title=" Total -ve Malaria Cases"
+                count={mNegativeC}
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+      
+
+      
+
+<MDBox my={3.2}>
+<DefaultStatisticsCard
+                title=" Total +ve TB Cases"
+                count={tbPostiveC}
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+
+        
+  <MDBox my={3.2}>
+  <DefaultStatisticsCard
+                title=" Total -ve TB Cases"
+                count= {tbNegativeC}
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+
+      
+
+<MDBox my={3.2}>
+      </MDBox>
+
+        <DefaultStatisticsCard
+                title=" Total +ve HIV Cases"
+                count={hivPostiveC}
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+
+<MDBox my={3.2}>
+      </MDBox>
+      <DefaultStatisticsCard
+                title=" Total -ve HIV Cases"
+                count={hivNegativeC}
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+                
+        />
+        
+      </Grid>
+      <Grid item xs={12} sm={6} lg={8}>
+      <MDBox >
+      <DefaultLineChart 
+                height = "72vh"
+                title="Prevelance "
+                description={
+                  <MDBox display="flex" justifyContent="space-between" >
+                    <MDBox display="flex" ml={-1}>
+                      <MDBadgeDot color="info" size="sm" badgeContent="Facebook Ads" />
+                      <MDBadgeDot color="dark" size="sm" badgeContent="Google Ads" />
+                    </MDBox>
+                    <MDBox mt={-4} mr={-1} position="absolute" right="1.5rem">
+                      <Tooltip title="See which ads perform better" placement="left" arrow>
+                        <MDButton
+                          variant="outlined"
+                          color="secondary"
+                          size="small"
+                          circular
+                          iconOnly
+                        >
+                          <Icon>priority_high</Icon>
+                        </MDButton>
+                      </Tooltip>
+                    </MDBox>
+                  </MDBox>
+                }
+                chart={defaultLineChartData}
+              />
+      </MDBox>
+     
+  
+
+      </Grid>
+
+      <Grid item xs={12} sm={6} lg={2}>
+      
+        <DefaultStatisticsCard
+                title=" Total +ve Malaria Cases"
+                count="2220"
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+
+<MDBox my={3.2}>
+<DefaultStatisticsCard
+                title=" Total -ve Malaria Cases"
+                count="2220"
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+
+      
+        <MDBox my={3.2}>
+        <DefaultStatisticsCard
+                title=" Total +ve TB Cases"
+                count="2220"
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+
+        
+
+<MDBox my={3.2}>
+<DefaultStatisticsCard
+                title=" Total -ve TB Cases"
+                count="2220"
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+
+      
+
+<MDBox my={3.2}>
+<DefaultStatisticsCard
+                title=" Total +ve HIV Cases"
+                count="2220"
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+        
+
+<MDBox my={3.2}>
+<DefaultStatisticsCard
+                title=" Total -ve HIV Cases"
+                count="2220"
+                percentage={{
+                  color: "success",
+                  value: "+55%",
+                  label: "since last month",
+                }}
+        />
+      </MDBox>
+      
+      </Grid>
+  
+              
+            
+            
+
             <Grid item xs={12} sm={6} lg={6}>
               <VerticalBarChart
                 color="success"
@@ -597,7 +934,7 @@ useEffect(() => {
             </Grid>
             <Grid item xs={12} sm={6} lg={4}>
             
-              <HorizontalBarChart  title="Test Categories" chart={horizontalBarChartData3} />
+              <HorizontalBarChart  title="Test By Lab Dept" chart={horizontalBarChartData3} />
               
             
             </Grid>
@@ -618,8 +955,8 @@ useEffect(() => {
               /> */}
               <Card sx={{ height: "100%" }}>
                 <VerticalBarChart height = "88.4%"
-                title="Tests Done"
-                description="Verifed test only"
+                title="Test Types"
+                description="Verified Tests Only"
                 chart={NumberOfTestsDone}
               />
               </Card>
@@ -632,7 +969,7 @@ useEffect(() => {
         </MDBox>
 
 
-        <Grid container spacing={2}>
+        <Grid container spacing={2} mt ={5}>
 
         <Grid item xs={12} sm={6} lg={4}>
 
